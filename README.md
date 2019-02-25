@@ -2,7 +2,7 @@ Created by Aabhas Vineet Malik (email: aabhaas.iiser@gmail.com)
 
 Modified by Ankur Shringi (email: ankurshringi@iisc.ac.in)
 
-Last Modification date : 2019-Feb-03
+Last Modification date : 2019-Feb-25
 
 -----------------------------------------------------------------------------
 # Description
@@ -11,10 +11,13 @@ We are providing three shell script files in this repository:
   - sorting_script_html.sh
   - sorting_script_txt.sh
   - edit_pdf_metadata.sh
+  - script_rename_hardlinks_by_master_list.bat (**only for windows**)
 
-The sorting_script_html.sh (sorting_script_txt.sh) is a shell script which can be used with a bash terminal to find pdf files in a given folder which contain the supplied keywords either in the displayed texts or in their metadata. If only one keyword is entered, a folder with the same name as the keyword is created and hardlinks of the matches will be dumbed there. On the other hand, if more than one keyword is given, all pdf files which qualify are named at the terminal output. This script also creates text.html (text.txt) file to display the context in which the supplied keywords appeared in the pdf files found during the search.
+The **sorting_script_html.sh** (**sorting_script_txt.sh**) is a shell script which can be used with a bash terminal to find pdf files in a given folder which contain the supplied keywords either in the displayed texts or in their metadata. If only one keyword is entered, a folder with the same name as the keyword is created and hardlinks of the matches will be dumbed there. On the other hand, if more than one keyword is given, all pdf files which qualify are named at the terminal output. This script also creates text.html (text.txt) file to display the context in which the supplied keywords appeared in the pdf files found during the search.
 
-We are also providing a script, edit_pdf_metadata.sh, which allows the user to edit the metadata (for example, author names, keywords which are otherwise not in the displayed text of the pdf file, etc.) of any pdf file (even those which do not have a searchable display text).
+We are also providing a script, **edit_pdf_metadata.sh**, which allows the user to edit the metadata (for example, author names, keywords which are otherwise not in the displayed text of the pdf file, etc.) of any pdf file (even those which do not have a searchable display text).
+
+Once you start using such scripts, you end up having multiple hardlinks of a same files located in different folders. Sometimes we have duplicated pdfs having different names, or sometimes we happen to rename a pdf without realizing that multiple hardlinks exists. The dis-advantage (or advantage) of renaming a hardlink is that it doesnt rename all other hardlinks associated to its files. If we want all the hardlinks of a file to have same file name then you need to manually locate and rename such hard-links. **script_rename_hardlinks_by_master_list.bat** is a script which does this automatically. It renames all the associated hardlinks (doesnt matter where they are located) of the files, same as the names of the files located in which the script is located. 
 
 -----------------------------------------------------------------------------
 # Prerequisits
@@ -43,3 +46,7 @@ We are also providing a script, edit_pdf_metadata.sh, which allows the user to e
     - $ ./name-of-the-script-file
 
 On a Linux system you may also copy these scripts to /usr/local/bin/ and rename them if you like. This will make them accessible as commands at the terminal prompt (the name of the script in /usr/local/bin/ will serve as the command name), and you will not have to copy the script everytime to the folder you want to use them in.
+
+* **script_rename_hardlinks_by_master_list.bat** 
+  * Its an self executable file, can only be used in Windows currently.
+  * Place this file or its hardlink in the reference directory (The folder in which all the file with reference names are located). Click on the file or right click or open it to execute.
