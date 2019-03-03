@@ -18,23 +18,27 @@
 # Copy this script to the folder which contains your pdf files.
 # Change the permission of the file so that it is executable (chmod -755 sorting_script_html.sh)
 # Put following command to get further instructions on how to use it
-# ./sorting_script_html.sh
+# ./sorting_script_html.sh <keyword>
 
 N_MAX=100 	# Number of lines to be read from the starting of the file
 
-rm text.html
-echo "<!DOCTYPE html>" >> text.html
-echo "<html>" >> text.html
-echo "<head>" >> text.html
-echo "</head>" >> text.html
-echo "<title> Sorting Script</title>" >> text.html
-echo "<body>" >> text.html
+file="$@.html"
+echo $file
+rm $file
+echo "<!DOCTYPE html>" >> $file
+echo "<html>" >> $file
+echo "<head>" >> $file
+echo '<script src="toc.js" type="text/javascript"></script>' >> $file
+echo "</head>" >> $file
+echo "<title> Sorting Script</title>" >> $file
+echo '<body onload="generateTOC(document.getElementById(`toc`));">' >> $file
+echo '<div id="toc"></div>' >>$file
 if [ $# -eq 0 ]
 then
 	echo "enter keywords separated by a space"
 	echo "if only one keyword is entered, a folder will be created and hardlinks of the matches will be dumbed there"
 	echo "if more than one keyword is given, all matches will be displayed"
-	echo "a file named text.html will always be created giving the context in which the keywords appear in the pdf files"
+	echo "a file named $file will always be created giving the context in which the keywords appear in the pdf files"
 elif [ $# -eq 1 ]
 then
 	echo "*************number of inputs is 1***************"
@@ -43,17 +47,17 @@ then
 	if [ -n "$(ls -d $1 2>/dev/null)" ]
 	then
 		echo "***********folder for $1 is available*********"
-		echo "******context has been enumerated in text.html*****"
+		echo "******context has been enumerated in $file*****"
 	else
 		echo "***********folder for $1 is not available*********"
 		echo "********folder for $1 is being created********"
 		mkdir "$1"
-		echo "******context has been enumerated in text.html*****"
+		echo "******context has been enumerated in $file*****"
 	fi
 else
 	echo "********number of inputs is greater than 1*********"
 	echo "**************files are listed below***************"
-	echo "******context has been enumerated in text.html*****"
+	echo "******context has been enumerated in $file*****"
 fi
 
 if [ $# -gt 0 ]
@@ -67,19 +71,20 @@ then
 		for ((j=1; j<$#+1; j=j+1))
 		do
 			less $i | head -$N_MAX > .tmp.txt
-			COMMAND_ONE=$(grep -in ${!j} -C 5 .tmp.txt | tee .text.txt)		#${!#} gives access to the last argument supplied to the script; ${!j} gives access to the j-th argument supplied to the script
+			COMMAND_ONE=$(grep -in ${!j} -C 5 .tmp.txt | tee .text.txt)		#${!#} gives access to the last argument supplied to the script
 			COMMAND_TWO=$(pdfinfo $i 2>/dev/null | grep -i ${!j})
 			if [ -n "$COMMAND_ONE" ] || [ -n "$COMMAND_TWO" ]	#'-n' checks that the string is not empty. for more options see 'man test'
 			then
 				FLAG=1
-				echo "<pre>" >> text.html
-				echo "<hr>" >> text.html
-				echo -e 'FILE: '$i'<br>KEYWORD'$j': '${!j} >> text.html		# -e enables the interpretation of '\' characters
-				echo "<hr>" >> text.html
+				echo '<h2 id = "'$i'">' >> $file
+				echo -e $i '</h2>' >> $file
+				echo '<a href="#toc">Go back to the table of contents!</a>' >> $file
+				echo '<pre>' >> $file 
+				echo '<br>KEYWORD '$j': '${!j} >> $file		# -e enables the interpretation of '\' characters
 				sed -i -e ':a' -e 'N' -e '$!ba' -e 's/\n/<br>/g' .text.txt #Replacing new line character with <br>
-				sed -i -e "s/${!j}/<mark>${!j}<\\/mark>/gI" .text.txt #Highlighting the keyword wherever it is appearing
-				cat .text.txt >> text.html
-				echo "</pre>" >> text.html
+				sed -i -e "s/${!j}/<mark>${!j}<\\/mark>/g" .text.txt #Highlighting the keyword wherever it is appearing
+				cat .text.txt >> $file
+				echo "</pre>" >> $file
 				
 				continue
 			else
@@ -110,5 +115,5 @@ then
 	IFS="$OIFS"
 fi
 rm .tmp.txt .text.txt
-echo "</body>" >> text.html
-echo "</html>" >> text.html
+echo "</body>" >> $file
+echo "</html>" >> $file
