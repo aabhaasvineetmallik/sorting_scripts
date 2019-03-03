@@ -7,13 +7,15 @@ Last Modification date : 2019-Feb-25
 -----------------------------------------------------------------------------
 # Description
 
-We are providing three shell script files in this repository:
+We are providing three shell script files and one bat script in this repository:
   - sorting_script_html.sh
   - sorting_script_txt.sh
   - edit_pdf_metadata.sh
   - script_rename_hardlinks_by_master_list.bat (**only for windows**)
 
-The **sorting_script_html.sh** (**sorting_script_txt.sh**) is a shell script which can be used with a bash terminal to find pdf files in a given folder which contain the supplied keywords either in the displayed texts or in their metadata. If only one keyword is entered, a folder with the same name as the keyword is created and hardlinks of the matches will be dumbed there. On the other hand, if more than one keyword is given, all pdf files which qualify are named at the terminal output. This script also creates text.html (text.txt) file to display the context in which the supplied keywords appeared in the pdf files found during the search.
+The **sorting_script_html.sh** (**sorting_script_txt.sh**) is a shell script which can be used with a bash terminal to find pdf files in a given folder which contain the supplied keywords either in the displayed texts or in their metadata. If only one keyword is entered, a folder with the same name as the keyword is created and hardlinks of the matches will be dumbed there. On the other hand, if more than one keyword is given, all pdf files which qualify are named at the terminal output. This script also creates <Keyword>.html (text.txt) file to display the context in which the supplied keywords appeared in the pdf files found during the search. **sorting_script_html.sh** use a JavaScript file **toc.js** for automatically creating table to contents automatically by the names of pdf files in which the keyword in found. 
+
+
 
 We are also providing a script, **edit_pdf_metadata.sh**, which allows the user to edit the metadata (for example, author names, keywords which are otherwise not in the displayed text of the pdf file, etc.) of any pdf file (even those which do not have a searchable display text).
 
