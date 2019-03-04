@@ -24,6 +24,7 @@ N_MAX=100 	# Number of lines to be read from the starting of the file
 
 file="$@.html"
 echo $file
+folder="${PWD##*/}"
 rm $file
 echo "<!DOCTYPE html>" >> $file
 echo "<html>" >> $file
@@ -77,7 +78,7 @@ then
 			then
 				FLAG=1
 				echo '<h2 id = "'$i'">' >> $file
-				echo -e $i '</h2>' >> $file
+				echo -e '<a href = "../'$folder'/'$i '" target = "_blank">' $i'</a></h2>' >> $file
 				echo '<a href="#toc">Go back to the table of contents!</a>' >> $file
 				echo '<pre>' >> $file 
 				echo '<br>KEYWORD '$j': '${!j} >> $file		# -e enables the interpretation of '\' characters
