@@ -54,13 +54,25 @@ else
 	echo "Results are being segregated in the file: '"$file"';"
 	echo "  (Results from first keyword will appear first, followed by the rest. Scroll down to see other keywords.)"
 fi
-
+echo
+# progress bar function
+prog(){
+    local w=80 p=$1;  shift
+    # create a string of spaces, then change them to dots
+    printf -v dots "%*s" "$(( $p*$w/100 ))" ""; dots=${dots// /.};
+    # print those dots on a fixed-width space plus the percentage etc.
+    printf "\r\e[K|%-*s| %3d %% %s" "$w" "$dots" "$p" "$*";
+}
 if [ $# -gt 0 ]
 then
 	OIFS="$IFS"
 	IFS=$'\n'
+	count="$(ls 2>/dev/null -Ubad1 -- *.pdf | wc -l)" # Total number of pdfs in the current folder
+	f=1
 	for i in $(ls *.pdf)
 	do
+		prog "$(($(($f*100))/$count))" "Progress" # Displaying percentage progress (number of pdfs scanned)
+		f=$(($f+1))
 		FLAG=0
 		for ((j=1; j<$#+1; j=j+1))
 		do
@@ -96,3 +108,4 @@ fi
 rm ".$file.text.txt" ".$file.tmp.txt"
 echo "</body>" >> "$file"
 echo "</html>" >> "$file"
+echo #Empty echo for new line
