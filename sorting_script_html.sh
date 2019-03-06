@@ -23,42 +23,36 @@
 N_MAX=100 	# Number of lines to be read from the starting of the file
 
 file="$@.html"
-echo $file
+#echo "$file"
 folder="${PWD##*/}"
-rm $file
-echo "<!DOCTYPE html>" >> $file
-echo "<html>" >> $file
-echo "<head>" >> $file
-echo '<script src="toc.js" type="text/javascript"></script>' >> $file
-echo "</head>" >> $file
-echo "<title> Sorting Script</title>" >> $file
-echo '<body onload="generateTOC(document.getElementById(`toc`));">' >> $file
-echo '<div id="toc"></div>' >>$file
+rm "$file"
+echo "<!DOCTYPE html>" >> "$file"
+echo "<html>" >> "$file"
+echo "<head>" >> "$file"
+echo "<title>"$@"</title>" >> "$file"
+echo '<script src="toc.js" type="text/javascript"></script>' >> "$file"
+echo "</head>" >> "$file"
+echo "<title> Sorting Script</title>" >> "$file"
+echo '<body onload="generateTOC(document.getElementById(`toc`));">' >> "$file"
+echo '<div id="toc"></div>' >>"$file"
 if [ $# -eq 0 ]
 then
 	echo "enter keywords separated by a space"
-	echo "if only one keyword is entered, a folder will be created and hardlinks of the matches will be dumbed there"
 	echo "if more than one keyword is given, all matches will be displayed"
-	echo "a file named $file will always be created giving the context in which the keywords appear in the pdf files"
+	echo 'If you want to search for a phrase put it in quotes Ex. "Quantum Computing"'
+	echo "a file will always be created giving the context in which the keywords appear in the pdf files"
 elif [ $# -eq 1 ]
 then
-	echo "*************number of inputs is 1***************"
-	echo "************hard links will be made**************"
-	echo "*********case insensitive search will be carried out in the current folder*******"
-	if [ -n "$(ls -d $1 2>/dev/null)" ]
-	then
-		echo "***********folder for $1 is available*********"
-		echo "******context has been enumerated in $file*****"
-	else
-		echo "***********folder for $1 is not available*********"
-		echo "********folder for $1 is being created********"
-		mkdir "$1"
-		echo "******context has been enumerated in $file*****"
-	fi
+	echo "The number of inputs keywords is: 1"
+	echo "A case insensitive search will be carried out in first '"$N_MAX"' words of the pdfs."
+	echo "  (Change the number of words to search by changing 'N_MAX' parameter in the script)"
+	echo "Results are being segregated in the file: '"$file"'"
 else
-	echo "********number of inputs is greater than 1*********"
-	echo "**************files are listed below***************"
-	echo "******context has been enumerated in $file*****"
+	echo "The number of inputs keywords is: "$# ""
+	echo "A case insensitive search will be carried out in first '"$N_MAX"' words of the pdfs."
+	echo "  (Change the number of words to search by changing 'N_MAX' parameter in the script)"
+	echo "Results are being segregated in the file: '"$file"';"
+	echo "  (Results from first keyword will appear first, followed by the rest. Scroll down to see other keywords.)"
 fi
 
 if [ $# -gt 0 ]
@@ -68,25 +62,23 @@ then
 	for i in $(ls *.pdf)
 	do
 		FLAG=0
-		#echo $i
 		for ((j=1; j<$#+1; j=j+1))
 		do
-			less $i | head -$N_MAX > .tmp.txt
-			COMMAND_ONE=$(grep -in ${!j} -C 5 .tmp.txt | tee .text.txt)		#${!#} gives access to the last argument supplied to the script
+			less $i | head -$N_MAX > ".$file.tmp.txt"
+			COMMAND_ONE=$(grep -in ${!j} -C 5 ".$file.tmp.txt" | tee ".$file.text.txt")		#${!#} gives access to the last argument supplied to the script
 			COMMAND_TWO=$(pdfinfo $i 2>/dev/null | grep -i ${!j})
 			if [ -n "$COMMAND_ONE" ] || [ -n "$COMMAND_TWO" ]	#'-n' checks that the string is not empty. for more options see 'man test'
 			then
 				FLAG=1
-				echo '<h2 id = "'$i'">' >> $file
-				echo -e '<a href = "../'$folder'/'$i '" target = "_blank">' $i'</a></h2>' >> $file
-				echo '<a href="#toc">Go back to the table of contents!</a>' >> $file
-				echo '<pre>' >> $file 
-				echo '<br>KEYWORD '$j': '${!j} >> $file		# -e enables the interpretation of '\' characters
-				sed -i -e ':a' -e 'N' -e '$!ba' -e 's/\n/<br>/g' .text.txt #Replacing new line character with <br>
-				sed -i -e "s/${!j}/<mark>${!j}<\\/mark>/g" .text.txt #Highlighting the keyword wherever it is appearing
-				cat .text.txt >> $file
-				echo "</pre>" >> $file
-				
+				echo '<h2 id = "'$i'">' >> "$file"
+				echo -e '<a href = "../'$folder'/'$i '" target = "_blank">' $i'</a></h2>' >> "$file"
+				echo '<a href="#toc">Go back to the table of contents!</a>' >> "$file"
+				echo '<pre>' >> "$file"
+				echo '<br>KEYWORD '$j': '${!j} >> "$file"		# -e enables the interpretation of '\' characters
+				sed -i -e ':a' -e 'N' -e '$!ba' -e 's/\n/<br>/gI' ".$file.text.txt" #Replacing new line character with <br>
+				sed -i -e "s/${!j}/<mark>${!j}<\\/mark>/gI" ".$file.text.txt" #Highlighting the keyword wherever it is appearing
+				cat ".$file.text.txt" >> "$file"
+				echo "</pre>" >> "$file"
 				continue
 			else
 				FLAG=0
@@ -98,23 +90,9 @@ then
 		then
 			continue
 		fi
-
-		if [ $# -eq 1 ]
-		then
-			link="$1/$i"
-			if [ ! -f "$link" ]		#'[ -f "filename" ]' if "filename" exists and is a regular file
-			then
-				echo "Creating hardlink for file: $i"
-				ln $i $link
-			else
-				echo "Hardlink  exists  for file: $i"
-			fi
-		else
-			echo $i
-		fi
 	done
 	IFS="$OIFS"
 fi
-rm .tmp.txt .text.txt
-echo "</body>" >> $file
-echo "</html>" >> $file
+rm ".$file.text.txt" ".$file.tmp.txt"
+echo "</body>" >> "$file"
+echo "</html>" >> "$file"
