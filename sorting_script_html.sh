@@ -78,7 +78,7 @@ then
 		FLAG=0
 		for ((j=1; j<$#+1; j=j+1))
 		do
-			less -f $i | head -$N_MAX > ".$file.tmp.txt"
+			less $i | head -$N_MAX > ".$file.tmp.txt"
 			COMMAND_ONE=$(grep -in ${!j} -C 5 ".$file.tmp.txt" | tee ".$file.text.txt")		#${!#} gives access to the last argument supplied to the script
 			COMMAND_TWO=$(pdfinfo $i 2>/dev/null | grep -i ${!j})
 			if [ -n "$COMMAND_ONE" ] || [ -n "$COMMAND_TWO" ]	#'-n' checks that the string is not empty. for more options see 'man test'
