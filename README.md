@@ -1,13 +1,13 @@
 Created by Aabhas Vineet Malik (email: aabhaas.iiser@gmail.com) and Ankur Shringi (email: ankurshringi@iisc.ac.in)
 
-Last Modification date : 2019-Feb-25
+Last Modification date : 2020-Apr-23
 
 -----------------------------------------------------------------------------
 # Motivation
 
-A literature review requires going through a lot of research articles. While going through these research articles (which are mostly stored as pdfs locally), we sometimes just want to look for the occurrences or usage of a specific text/ keywords (such as species name or method or a technical term). One way is to solve this problem is to skimming through all the articles, looking for such keywords (which is long and tedious), and other is to use a reference manage such as Mendeley or Zotero (and many others). Each solution comes with it on pros and cons. There could be others ways to solve this problem but we are not aware of any such neat, completely **free and open source** solution (please contact us if you have such solution in mind).
+A literature review requires going through a lot of research articles. While going through these research articles (which are mostly stored as pdfs locally), we sometimes just want to look for the occurrences or usage of a specific text/ keywords (such as species name or method or a technical term). One way to solve this problem is to skim through all the articles, looking for such keywords (which is long and tedious), and other is to use a reference manager such as Mendeley or Zotero (and many others). Each solution comes with it on pros and cons. There could be other ways of solving this problem but we are not aware of any such neat, completely **free and open source** solution (please contact us if you have such a solution in mind).
 
-A semi ideal way to solve through this problem is to write a script, which goes through all the stored pdfs, read its text automatically, search these keywords and outputs a summary report. That's what is being attempted in the scripts available in this repository.
+A semi ideal way to solve this problem is to write a script, which goes through all the stored pdfs, reads their text automatically, search these keywords and provides a summary report as an output. This what is being attempted in the scripts available in this repository.
 
 We are providing two shell scripts 
 
@@ -17,7 +17,7 @@ We are providing two shell scripts
 There are two additional scripts which help us sort the pdf names and metadata. 
 
   - **edit_pdf_metadata.sh** (Embeds metadata to the pdf itself)
-  - **script_rename_hardlinks_by_master_list.bat** (Automatically renaming any hard-link pdfs)
+  - **script_rename_hardlinks_by_master_list.bat** (Automatically renaming all the pdfs which are hard-linked together)
 
 A detailed description and usage of each of these script is provided below.
 
@@ -25,9 +25,9 @@ A detailed description and usage of each of these script is provided below.
 
 ## **sorting_script_html.sh**
 
-This is a shell script, which needs to be used with a bash terminal to find pdf files in a given folder in which a keywords needs to be searched inside the pdf contents or its metadata.
+This is a shell script, which can be used with a bash terminal to find pdf files in a given folder which contain one or more given keywords in their display-able contents or their metadata.
 
-Scripts extract text from all the pdfs located in the chosen folder, searches the keyword and its context (surrounding sentences around the keyword) and creates a html summary of all the results. This html file lists all the pdf in which all the keywords are found, highlights the keyword, provides the surrounding text and hyperlinks the pdf from which the keyword is found.
+The script extracts text from all the pdfs located in the chosen folder, searches the keywords and its context (surrounding sentences around the keyword) and creates a html summary of all the results. This html file lists all the pdf in which the keywords are found, highlights the keyword, provides the surrounding text and hyperlinks the pdf from which the keyword is found.
 
 You need to use it to get a feel for it. Please make sure you have the set-up ready before launching it (See section 3: **Prerequisites** (especially the windows users)).  
 
@@ -49,7 +49,7 @@ You need to use it to get a feel for it. Please make sure you have the set-up re
 
 **Note:-**
 
-- **sorting_script_html.sh** use a JavaScript file **toc.js** for automatically creating table to contents automatically by the names of pdf files in which the keyword in found. So keep this file in the same folder as this script.
+- **sorting_script_html.sh** uses a JavaScript file **toc.js** for automatically creating table of contents automatically by the names of pdf files in which the keyword in found. So keep this file in the same folder as this script.
 - This scripts outputs the results in **Summary** folder in the parent directory of the current directory. 
 
 **Known issues**
@@ -66,7 +66,7 @@ This script allows the user to edit the pdf metadata (for example, author names,
 
 ## **script_rename_hardlinks_by_master_list.bat**
 
-Once you start using shell scripts especially **sorting_script_txt.sh**, you soon end up having multiple pdf hard-links of a same files located in different folders. Sometimes we have duplicated pdfs having different names, or sometimes we happen to rename a pdf without realizing that multiple hard-links exists. The dis-advantage (or advantage) of renaming a hard-link is that it doesn't rename all other hard-links associated to its files. If we want all the hard-links of a file to have same file name then you need to manually locate and rename such hard-links.  is a script which does this automatically. It renames all the associated hard-links (doesn't matter where they are located) of the files, same as the names of the files located in which the script is located. 
+Once you start using shell scripts especially **sorting_script_txt.sh**, you soon end up having multiple pdf hard-links of the same file located in different folders. Sometimes we have duplicated pdfs having different names, or sometimes we happen to rename a pdf without realizing that multiple hard-links exists. The dis-advantage (or advantage) of renaming a hard-link is that it doesn't rename all other hard-links associated to its files. If we want all the hard-links of a file to have same file name then you need to manually locate and rename such hard-links. This is a script which does this automatically. It renames all the associated hard-links (doesn't matter where they are located) of the files, same as the names of the files located in which the script is located. 
 
 **Known issues:**
 
@@ -78,7 +78,7 @@ Once you start using shell scripts especially **sorting_script_txt.sh**, you soo
 ## Linux (tested on Ubuntu 16.04)
   - There are no prerequisites for the **sorting_script_txt.sh** on Linux systems.
   - However for **sorting_script_html.sh** you need to install pdftotext library (See section for **Windows 10**)
-  - To use the edit_metadata.sh script you will need to install pdftk, which can be done in Ubuntu by issuing the following command at the terminal 'sudo apt-get install pdftk'.
+  - To use the edit_metadata.sh script you will need to install pdftk, which can be done in Ubuntu by issuing the following command at the terminal 'sudo snap install pdftk'.
 
 ## Windows10 
   - Install Windows Subsystem for Linux (WSL) (https://docs.microsoft.com/en-us/windows/wsl/install-win10)
@@ -119,13 +119,13 @@ https://www.windowscentral.com/how-launch-bash-shell-right-click-context-menu-wi
 
 - Creating hard-link or symbolic links without command line
 
-Link to Shell Extension is fantastic utility to create all type of links or junctions. Please see the information at the link below.
+Link to Shell Extension is fantastic utility to create all types of links or junctions. Please see the information at the link below.
 
 https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html
 
 # Feedback
 
-* Please feel free to raise a issue on github if you are find a bug or suggest a feature. 
+* Please feel free to raise an issue on github if you may find a bug or want to suggest a feature. 
 
 * If you come across any free opensource tool which surpasses what is being achieved here then please let us know.
 
